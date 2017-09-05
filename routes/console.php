@@ -7,5 +7,5 @@ Artisan::command('test', function () {
         'type'   => 'success',
     ];
 
-    event(new \App\Events\Testing($data));
+    event(new App\Events\PublicChannel($data));
 });

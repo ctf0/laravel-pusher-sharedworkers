@@ -1,3 +1,12 @@
+<script>
+if (typeof window.SharedWorker === 'undefined') {
+    var head = document.getElementsByTagName('head')[0]
+    var js = document.createElement('script')
+    js.src = '//cdnjs.cloudflare.com/ajax/libs/pusher/4.1.0/pusher.min.js'
+    head.appendChild(js)
+}
+</script>
+
 <style>
     .notif-container {
         padding: 0 0 4rem;

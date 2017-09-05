@@ -7,23 +7,28 @@ const pusher = new Pusher(process.env.MIX_PUSHER_APP_KEY, {
     encrypted: process.env.MIX_PUSHER_APP_ENCRYPT
 })
 
+function pubChannels() {
+    pusher.subscribe('public-channel').bind(NS + 'PublicChannel', (evt) => {
+        clients.forEach((client) => {
+            client.postMessage(evt.data)
+        })
+    })
+}
+
+function priChannels() {
+    // pusher.subscribe().bind(NS + '', (evt) => {
+    //     clients.forEach((client) => {
+    //         client.postMessage(evt.data)
+    //     })
+    // })
+}
+
+pubChannels()
+priChannels()
+
 addEventListener('connect', (evt) => {
     let port = evt.ports[0]
 
     clients.push(port)
     port.start()
 })
-
-/*                publicChannel                */
-pusher.subscribe('public').bind(NS + 'Testing', (data) => {
-    clients.forEach((client) => {
-        client.postMessage(data)
-    })
-})
-
-/*                privateChannel                */
-// pusher.subscribe().bind(NS + '', (data) => {
-//     clients.forEach((client) => {
-//         client.postMessage(data)
-//     })
-// })

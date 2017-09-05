@@ -8,11 +8,11 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class Testing implements ShouldBroadcastNow
+class PublicChannel implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $data;
+    public $data;
 
     /**
      * Create a new event instance.
@@ -31,16 +31,6 @@ class Testing implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('public');
-    }
-
-    /**
-     * Suger for the event payload, so we get the data directly instead of "e.data".
-     *
-     * @return [type] [description]
-     */
-    public function broadcastWith()
-    {
-        return $this->data;
+        return new Channel('public-channel');
     }
 }

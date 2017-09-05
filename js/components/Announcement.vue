@@ -1,22 +1,33 @@
-<template></template>
-
 <script>
 export default {
     created() {
-        this.run()
+        if (typeof window.SharedWorker === 'undefined') {
+            return this.fallBack()
+        }
+
+        return this.shared_workers()
     },
     methods: {
-        run() {
-            if (typeof window.SharedWorker === 'undefined') {
-                // todo
-                // add fallback
-                this.showNotif({
-                    title: 'Error',
-                    body: 'Your browser doesn\'t support SharedWorkers',
-                    type: 'black'
-                })
-            }
+        /*                FallBack                */
+        fallBack() {
+            const NS = 'App\\Events\\'
+            const pusher = new Pusher(process.env.MIX_PUSHER_APP_KEY, {
+                cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+                encrypted: process.env.MIX_PUSHER_APP_ENCRYPT
+            })
 
+            this.pubChannels(pusher, NS)
+            this.priChannels(pusher, NS)
+        },
+        pubChannels(pusher, NS) {
+            pusher.subscribe('public-channel').bind(NS + 'PublicChannel', ({data}) => {
+                this.showNotif(data)
+            })
+        },
+        priChannels(pusher, NS) {},
+
+        /*                Shared                */
+        shared_workers() {
             let worker = new SharedWorker(process.env.MIX_APP_URL + '/assets/js/pusher/shared_worker.js')
 
             worker.port.onmessage = ({data}) => {
@@ -28,7 +39,7 @@ export default {
                     this.showNotif({
                         title: 'Error',
                         body: message,
-                        type: 'black'
+                        type: 'danger'
                     })
                 }
 
@@ -37,6 +48,8 @@ export default {
 
             worker.port.start()
         },
+
+        /*                Util                */
         showNotif(data) {
             EventHub.fire('showNotif', {
                 title: data.title,
@@ -44,6 +57,7 @@ export default {
                 type: data.type
             })
         }
-    }
+    },
+    render () {}
 }
 </script>
