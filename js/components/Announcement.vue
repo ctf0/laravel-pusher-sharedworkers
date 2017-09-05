@@ -2,10 +2,10 @@
 export default {
     created() {
         if (typeof window.SharedWorker === 'undefined') {
-            return this.fallBack()
+            this.fallBack()
+        } else {
+            this.shared_workers()
         }
-
-        return this.shared_workers()
     },
     methods: {
         /*                FallBack                */
@@ -16,15 +16,10 @@ export default {
                 encrypted: process.env.MIX_PUSHER_APP_ENCRYPT
             })
 
-            this.pubChannels(pusher, NS)
-            this.priChannels(pusher, NS)
-        },
-        pubChannels(pusher, NS) {
-            pusher.subscribe('public-channel').bind(NS + 'PublicChannel', ({data}) => {
+            pusher.subscribe('public-channel').bind(NS + 'Testing', ({data}) => {
                 this.showNotif(data)
             })
         },
-        priChannels(pusher, NS) {},
 
         /*                Shared                */
         shared_workers() {

@@ -8,23 +8,14 @@ const pusher = new Pusher(process.env.MIX_PUSHER_APP_KEY, {
 })
 
 function pubChannels() {
-    pusher.subscribe('public-channel').bind(NS + 'PublicChannel', (evt) => {
+    pusher.subscribe('public-channel').bind(NS + 'Testing', (evt) => {
         clients.forEach((client) => {
             client.postMessage(evt.data)
         })
     })
 }
 
-function priChannels() {
-    // pusher.subscribe().bind(NS + '', (evt) => {
-    //     clients.forEach((client) => {
-    //         client.postMessage(evt.data)
-    //     })
-    // })
-}
-
 pubChannels()
-priChannels()
 
 addEventListener('connect', (evt) => {
     let port = evt.ports[0]
