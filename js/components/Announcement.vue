@@ -1,28 +1,32 @@
 <script>
+import EchoLib from 'laravel-echo'
+
+window.Pusher = require('pusher-js')
+window.Echo = new EchoLib({
+    broadcaster: process.env.MIX_BROADCAST_DRIVER,
+    key: process.env.MIX_PUSHER_APP_KEY,
+    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+    encrypted: process.env.MIX_PUSHER_APP_ENCRYPT
+})
+
 export default {
     created() {
         if (typeof window.SharedWorker === 'undefined') {
-            this.fallBack()
-        } else {
-            this.shared_workers()
+            throw 'Your browser doesn\'t support SharedWorkers'
         }
+
+        this.publicChannels()
+        this.privateChannels()
     },
     methods: {
-        /*                FallBack                */
-        fallBack() {
-            const NS = 'App\\Events\\'
-            const pusher = new Pusher(process.env.MIX_PUSHER_APP_KEY, {
-                cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-                encrypted: process.env.MIX_PUSHER_APP_ENCRYPT
-            })
-
-            pusher.subscribe('public-channel').bind(NS + 'Testing', ({data}) => {
+        privateChannels() {
+            Echo.private('').listen('', ({data}) => {
                 this.showNotif(data)
             })
         },
 
         /*                Shared                */
-        shared_workers() {
+        publicChannels() {
             let worker = new SharedWorker(process.env.MIX_APP_URL + '/assets/js/pusher/shared_worker.js')
 
             worker.port.onmessage = ({data}) => {
