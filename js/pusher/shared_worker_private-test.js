@@ -3,6 +3,7 @@ importScripts('pusher.worker.min.js')
 const NS = 'App\\Events\\'
 
 // csrf
+// make an ajax call to a url and get the current csrf token
 let csrf_token
 let xhr = new XMLHttpRequest()
 xhr.onload = function(e) {
