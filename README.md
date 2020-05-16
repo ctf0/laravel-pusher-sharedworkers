@@ -13,6 +13,6 @@
 
 
 ## Exp "maybe"
-- check if the browser have tabs of the same origina "window, tab1, tab2, etc.."
+- check if the browser have tabs of the same origin "window, tab1, tab2, etc.."
 - if yes then disable/stop the ws listening to notification from pusher on all but main window
 - use https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API to share the date
